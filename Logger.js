@@ -12,10 +12,12 @@ module.exports = class Logger {
         this.generateJSON = require('./reporting/jsonReport.js');
     }
 
+    /* GENERATE CONSOLE REPORT */
     consoleReport() {
         this.generateConsole(this.logs);
     }
 
+    /* GENERATE HTML REPORT */
     htmlReport(location, title) {
         this.generateHTML(location, this.logs, {
             header: this.header,
@@ -23,8 +25,14 @@ module.exports = class Logger {
         });
     }
 
-    /* Stack Overflow credit: https://stackoverflow.com/questions/16697791/nodejs-get-filename-of-caller-function/29581862#29581862 */
+    /* GENERATE JSON REPORT */
+    jsonReport(location) {
+        this.generateJSON(location, this.logs);
+    }
+
+    /* RETURNS THE NAME OF THE MODULE THAT CALLED THE LOG */
     getCallingModule() {
+        /* Stack Overflow credit: https://stackoverflow.com/questions/16697791/nodejs-get-filename-of-caller-function/29581862#29581862 */
         var callingModule, filePaths, x, callingPath, err, currentFile,
             originalPrepareStackTrace = Error.prepareStackTrace; /* So we don't lose the prepareStackTrace */
         try {
@@ -53,6 +61,7 @@ module.exports = class Logger {
         return callingModule;
     }
 
+    /* BASE LOGGING FUNCTION */
     log(title, obj) {
         var logObj;
 

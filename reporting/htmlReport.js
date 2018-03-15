@@ -30,5 +30,6 @@ module.exports = (location, logs, reportDetails) => {
 
     /* write the report */
     fs.writeFileSync(`./reports/${reportDetails.reportTitle}.html`, html);
-    console.log(`Report "${reportDetails.reportTitle}" written to ${path.resolve(location)}`);
+    // eslint-disable-next-line
+    console.log(`HTML Report "${reportDetails.reportTitle}" written to ${path.resolve(location)}`);
 };

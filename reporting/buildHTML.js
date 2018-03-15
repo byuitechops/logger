@@ -1,7 +1,7 @@
 module.exports = (logs) => {
 
     if (logs.length === 0) {
-        return;
+        return null;
     }
 
     var rows = logs.map(log => {
@@ -30,7 +30,7 @@ module.exports = (logs) => {
     if (title === 'error') {
         title = `<span style="color:red">Errors (${logs.length})</span>`;
     } else if (title === 'warning') {
-        title = `<span style="color:orange">Warnings (${logs.length})</span>`;
+        title = `<span style="color:yellow">Warnings (${logs.length})</span>`;
     } else if (title === 'fatalError') {
         title = `<span style="color:red">Fatal Errors (${logs.length})</span>`;
     } else if (title === 'message') {

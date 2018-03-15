@@ -1,16 +1,13 @@
 /* eslint no-console:0 */
-
 const fs = require('fs');
+const path = require('path');
 
-module.exports = (course, callback) => {
-
-    fs.writeFile(`./reports/report${course.info.fileName.split('.zip')[0]}.json`, JSON.stringify(course.logs, null, 3), err => {
+module.exports = (location, logs) => {
+    fs.writeFile(location, JSON.stringify(logs, null, '\t'), err => {
         if (err) {
-            course.error(err);
-            callback(err);
+            console.error(err);
         } else {
-            console.log('\nFinal JSON report written to report.json');
-            callback(null, course);
+            console.log(`JSON Report written to ${path.resolve(location)}`);
         }
     });
 };
