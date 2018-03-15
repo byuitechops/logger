@@ -1,7 +1,6 @@
-module.exports = (logs, callback) => {
+module.exports = (logs) => {
 
     if (logs.length === 0) {
-        callback(null, '');
         return;
     }
 
@@ -31,7 +30,7 @@ module.exports = (logs, callback) => {
     if (title === 'error') {
         title = `<span style="color:red">Errors (${logs.length})</span>`;
     } else if (title === 'warning') {
-        title = `<span style="color:yellow">Warnings (${logs.length})</span>`;
+        title = `<span style="color:orange">Warnings (${logs.length})</span>`;
     } else if (title === 'fatalError') {
         title = `<span style="color:red">Fatal Errors (${logs.length})</span>`;
     } else if (title === 'message') {
@@ -40,7 +39,7 @@ module.exports = (logs, callback) => {
         title = `${logs[0].title} (${logs.length})`;
     }
 
-    callback(null, `
+    return `
         <li>
             <div class="collapsible-header">
                 ${title}
@@ -64,5 +63,5 @@ module.exports = (logs, callback) => {
                 </table>
             </div>
         </li>
-    `);
+    `;
 };

@@ -1,11 +1,11 @@
-module.exports = (course) => `
+module.exports = (reportDetails) => `
 <!DOCTYPE html>
 <html>
 
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>${course.info.fileName.split('.zip')[0]} Conversion Report</title>
+        <title>${reportDetails.reportName} Conversion Report</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!--Import Google Icon Font-->
@@ -71,18 +71,7 @@ module.exports = (course) => `
     <body>
 
         <div class="card">
-            <div>
-                <span class="header1">Brightspace</span>
-                <span class="header1 right">Canvas</span>
-            </div>
-            <div>
-                <span class="header3">Course OU: ${course.info.D2LOU}</span>
-                <span class="header3 right">Course ID: ${course.info.canvasOU}</span>
-            </div>
-            <div>
-                <a target="_blank" href="https://byui.brightspace.com/d2l/home/${course.info.D2LOU}">https://byui.brightspace.com/d2l/home/${course.info.D2LOU}</a>
-                <a target="_blank" href="https://byui.instructure.com/courses/${course.info.canvasOU}" class="right">https://byui.instructure.com/courses/${course.info.canvasOU}</a>
-            </div>
+            ${reportDetails.header}
         </div>
 
         <div class="card">
@@ -90,7 +79,7 @@ module.exports = (course) => `
                 Changes
             </div>
             <ul class="collapsible" data-collapsible="accordion">
-                ${course.info.htmlReportGuts}
+                ${reportDetails.content}
             </ul>
 
         </div>

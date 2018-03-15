@@ -1,5 +1,5 @@
 {
-  "name": "conversion-reporter",
+  "name": "logger",
   "version": "1.0.0",
   "description": "",
   "main": "interface.js",
@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/byuitechops/conversion-reporter/issues"
   },
-  "homepage": "https://github.com/byuitechops/conversion-reporter#readme"
+  "homepage": "https://github.com/byuitechops/conversion-reporter#readme",
+  "dependencies": {
+    "chalk": "^2.3.2",
+    "fixed-width-string": "^1.0.0",
+    "moment": "^2.21.0"
+  }
 }
