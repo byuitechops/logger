@@ -1,87 +1,66 @@
+const htmlReport = require('./reporting/htmlReport.js');
+const jsonReport = require('./reporting/jsonReport.js');
+const consoleReport = require('./reporting/consoleReport.js');
+const getCallingModule = require('./logging/getCallingModule.js');
+const consoleMe = require('./logging/console.js');
 const moment = require('moment');
-const chalk = require('chalk');
-const fws = require('fixed-width-string');
-const path = require('path');
 
 module.exports = class Logger {
-    constructor() {
+
+    constructor(title) {
         this.logs = [];
-        this.header = '<h1>Report</h1>';
-        this.generateHTML = require('./reporting/htmlReport.js');
-        this.generateConsole = require('./reporting/consoleReport.js');
-        this.generateJSON = require('./reporting/jsonReport.js');
+        this.reportTitle = title;
+        this.reportSets = [];
+        this.htmlHeader = '';
+        this.logHeader = '<div class="header1">Logs</div>';
+        this.tagDescriptions = [];
     }
 
-    /* GENERATE CONSOLE REPORT */
-    consoleReport() {
-        this.generateConsole(this.logs);
-    }
-
-    /* GENERATE HTML REPORT */
-    htmlReport(location, title) {
-        this.generateHTML(location, this.logs, {
-            header: this.header,
-            reportTitle: title
+    // Adds a new report set
+    createReportSet(title, tags) {
+        this.reportSets.push({
+            title,
+            tags
         });
     }
 
-    /* GENERATE JSON REPORT */
-    jsonReport(location) {
-        this.generateJSON(location, this.logs);
+    setTagDescription(tag, description) {
+        this.tagDescriptions.push({
+            tag,
+            description
+        });
     }
 
-    /* RETURNS THE NAME OF THE MODULE THAT CALLED THE LOG */
-    getCallingModule() {
-        /* Stack Overflow credit: https://stackoverflow.com/questions/16697791/nodejs-get-filename-of-caller-function/29581862#29581862 */
-        var callingModule, filePaths, x, callingPath, err, currentFile,
-            originalPrepareStackTrace = Error.prepareStackTrace; /* So we don't lose the prepareStackTrace */
-        try {
-            err = new Error();
-            currentFile;
-            Error.prepareStackTrace = function (err, stack) {
-                return stack;
-            };
-
-            filePaths = err.stack.map(item => item.getFileName());
-
-            currentFile = path.basename(filePaths[0]);
-
-            for (x = 0; x < filePaths.length; x++) {
-                if (path.basename(filePaths[x]) != currentFile) {
-                    callingPath = path.dirname(filePaths[x]).split(path.sep);
-                    callingModule = callingPath[callingPath.length - 1];
-                    break;
-                }
-            }
-            /* reset prepareStackTrace */
-            Error.prepareStackTrace = originalPrepareStackTrace;
-        } catch (e) {
-            console.log('Call Location Error:', e);
-        }
-        return callingModule;
+    setHtmlHeader(html) {
+        this.htmlHeader = html;
     }
 
-    /* BASE LOGGING FUNCTION */
-    log(title, obj) {
+    log(tag, details) {
         var logObj;
 
-        if (obj == undefined || typeof title != 'string') {
-            console.log(this.getCallingModule(), 'Incorrect inputs into course.log: ', title);
+        if (details == undefined || typeof tag != 'string') {
+            console.log(getCallingModule(), 'Incorrect input into Logger.log(): ', tag);
             return;
         }
 
         logObj = {
-            title: title,
-            location: this.getCallingModule(),
+            tag: tag,
+            location: getCallingModule(),
             timestamp: moment().format(),
-            data: obj
+            data: details
         };
-
-        this.logs.push(logObj);
-        this.console(logObj);
+        if (tag !== 'message') {
+            this.logs.push(logObj);
+        }
+        consoleMe(logObj);
     }
 
-    /* Used to throw errors */
+    warning(message) {
+        this.log('warning', {
+            message: message
+        });
+    }
+
     error(err) {
         this.log('error', {
             message: err.message,
@@ -89,15 +68,6 @@ module.exports = class Logger {
         });
     }
 
-    /* Used to throw warnings */
-    warning(message) {
-        // if (typeof message == 'string')
-        this.log('warning', {
-            message: message
-        });
-    }
-
-    /* Used to throw fatal errors */
     fatalError(err) {
         this.log('fatalError', {
             message: err.message,
@@ -105,57 +75,77 @@ module.exports = class Logger {
         });
     }
 
-    /* Takes a string - used for logging one-time actions or displaying things to the console */
     message(message) {
         this.log('message', {
             message: message
         });
     }
 
-    console(logObj) {
-        var color1, color2;
-
-        function formatMessage(data) {
-            var properties = [];
-            Object.keys(data).forEach(key => {
-                properties.push(`${chalk.gray(key + ':')} ${data[key]}`);
-            });
-            return properties.join(' ');
+    findReportSetTags(reportSetName) {
+        if (typeof reportSetName === 'string') {
+            var reportSet = this.reportSets.find(rs => rs.title === reportSetName);
+            if (!reportSet) {
+                console.error(new Error('Report Set not identified:' + reportSetName));
+                return [];
+            } else {
+                return reportSet.tags;
+            }
+        } else if (Array.isArray(reportSetName)) {
+            return reportSetName;
         }
-
-
-        color1 = chalk.blueBright;
-        color2 = chalk.whiteBright;
-        if (logObj.title == 'error') {
-            color1 = chalk.red;
-            color2 = chalk.redBright;
-        } else if (logObj.title == 'fatalError') {
-            color1 = chalk.bgRed;
-            color2 = chalk.redBright;
-        } else if (logObj.title == 'message') {
-            color1 = chalk.greenBright;
-        } else if (logObj.title == 'warning') {
-            color1 = chalk.yellow;
-            color2 = chalk.yellowBright;
-        }
-
-        if (logObj.title == 'error') {
-            console.log(
-                fws(chalk.cyan(logObj.location), 15),
-                color1(`${fws(logObj.title, 25, { align: 'left' })}`),
-                color2(formatMessage(logObj.data))
-            );
-            return;
-        }
-
-        console.log(
-            fws(chalk.cyan(logObj.location), 15),
-            color1(`${fws(logObj.title, 20, { align: 'left' })}`),
-            color2(formatMessage(logObj.data))
-        );
     }
 
-    setHeader(newHeader) {
-        this.header = newHeader;
+    buildReportTitle(reportSetName) {
+        if (typeof reportSetName === 'string') {
+            return `${this.reportTitle} (${reportSetName})`;
+        } else {
+            return this.reportTitle;
+        }
+    }
+
+    filterLogs(logs, filterArray) {
+        if (filterArray && filterArray.length > 0) {
+            return logs.filter(log => filterArray.includes(log.tag));
+        } else {
+            return logs;
+        }
+    }
+
+    consoleReport(reportSetName) {
+        var tags = this.findReportSetTags(reportSetName);
+        var logs = this.filterLogs(this.logs, tags);
+        consoleReport(logs);
+    }
+
+    jsonReport(path, reportSetName) {
+        var tags = this.findReportSetTags(reportSetName);
+        var title = this.buildReportTitle(reportSetName);
+        var logs = this.filterLogs(this.logs, tags);
+        jsonReport(logs, title, path);
+    }
+
+    htmlReport(path, reportSetName) {
+        var tags = this.findReportSetTags(reportSetName);
+        var title = this.buildReportTitle(reportSetName);
+        var logs = this.filterLogs(this.logs, tags);
+        htmlReport(logs, title, path, this.htmlHeader);
+    }
+
+    consoleReportAll() {
+        this.reportSets.forEach(reportSet => {
+            consoleReport(this.logs, reportSet.logs);
+        });
+    }
+
+    jsonReportAll(path) {
+        this.reportSets.forEach(reportSet => {
+            this.jsonReport(path, reportSet.title);
+        });
+    }
+
+    htmlReportAll(path) {
+        this.reportSets.forEach(reportSet => {
+            htmlReport(path, this.logs, reportSet.logs);
+        });
     }
 };

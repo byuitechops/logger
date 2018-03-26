@@ -5,7 +5,7 @@ module.exports = (reportDetails) => `
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>${reportDetails.reportName} Conversion Report</title>
+        <title>${reportDetails.reportTitle} Report</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!--Import Google Icon Font-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -28,6 +28,11 @@ module.exports = (reportDetails) => `
 
             a:hover {
                 color: var(--color-3);
+            }
+
+            h1, h2, h3, h4, h5, h6 {
+                margin: 5px !important;
+                padding: 0 !important;
             }
 
             .card {
@@ -61,6 +66,7 @@ module.exports = (reportDetails) => `
     </head>
     <body>
         <div class="card">
+            <h2>${reportDetails.reportTitle}</h2>
             ${reportDetails.header}
         </div>
         <div class="card">

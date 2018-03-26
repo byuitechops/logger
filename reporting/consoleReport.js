@@ -5,9 +5,9 @@ const fws = require('fixed-width-string');
 
 module.exports = (logs) => {
 
-    var errors = logs.filter(log => log.title === 'error');
-    var fatalErrors = logs.filter(log => log.title === 'fatalError');
-    var warnings = logs.filter(log => log.title === 'warning');
+    var errors = logs.filter(log => log.tag === 'error');
+    var fatalErrors = logs.filter(log => log.tag === 'fatalError');
+    var warnings = logs.filter(log => log.tag === 'warning');
 
     console.log('\n' + chalk.bgBlue(`${fws('', 40)}REPORT${fws('', 40)}`));
     console.log(fws('|', 86, { align: 'right' }));
