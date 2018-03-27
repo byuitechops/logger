@@ -1,7 +1,7 @@
 module.exports = () => {
 
     /* Stack Overflow credit: https://stackoverflow.com/questions/16697791/nodejs-get-filename-of-caller-function/29581862#29581862 */
-    var callingModule, filePaths, callingPath, err, currentFile,
+    var callingModule, filePaths, x, callingPath, err, currentFile,
         originalPrepareStackTrace = Error.prepareStackTrace; /* So we don't lose the prepareStackTrace */
     try {
         err = new Error();
@@ -9,14 +9,16 @@ module.exports = () => {
         Error.prepareStackTrace = function (err, stack) {
             return stack;
         };
-
         /* Get all the strack trace filepaths */
         filePaths = err.stack.map(item => item.getFileName());
         /* Get the calling path by skipping any paths that have "logger" in them */
         callingPath = filePaths.find(p => !p.toLowerCase().includes('logger'));
         /* Get the calling module folder name and filename */
-        callingModule = callingPath.split('node_modules')[1].slice(1);
-
+        if (!callingPath.includes('node_modules')) {
+            callingModule = callingPath;
+        } else {
+            callingModule = callingPath.split('node_modules')[1].slice(1);
+        }
         /* reset prepareStackTrace */
         Error.prepareStackTrace = originalPrepareStackTrace;
     } catch (e) {
