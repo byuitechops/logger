@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = () => {
+
     /* Stack Overflow credit: https://stackoverflow.com/questions/16697791/nodejs-get-filename-of-caller-function/29581862#29581862 */
     var callingModule, filePaths, x, callingPath, err, currentFile,
         originalPrepareStackTrace = Error.prepareStackTrace; /* So we don't lose the prepareStackTrace */
@@ -11,17 +12,15 @@ module.exports = () => {
             return stack;
         };
 
+        /* Get all the strack trace filepaths */
         filePaths = err.stack.map(item => item.getFileName());
+        /* Get the calling path by skipping any paths that have "logger" in them */
+        callingPath = filePaths.find(p => !p.toLowerCase().includes('logger'));
+        /* Split the calling path */
+        callingPathArr = callingPath.split(path.sep);
+        /* Get the calling module folder name and filename */
+        callingModule = callingPath.split('node_modules')[1].slice(1);
 
-        currentFile = path.basename(filePaths[0]);
-
-        for (x = 0; x < filePaths.length; x++) {
-            if (path.basename(filePaths[x]) != currentFile) {
-                callingPath = path.dirname(filePaths[x]).split(path.sep);
-                callingModule = callingPath[callingPath.length - 1];
-                break;
-            }
-        }
         /* reset prepareStackTrace */
         Error.prepareStackTrace = originalPrepareStackTrace;
     } catch (e) {
