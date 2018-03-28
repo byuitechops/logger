@@ -87,7 +87,7 @@ logger.jsonReport(path <string-optional>, reportSetName <string-optional>);
 
 ## HTML Report
 ```js
-logger.jsonReport(path <string-optional>, reportSetName <string-optional>);
+logger.htmlReport(path <string-optional>, reportSetName <string-optional>);
 ```
 
 |Parameter|What it do|Default|
@@ -165,7 +165,7 @@ Let's take a look at the logger doing what it do:
 
 ```js
 var Logger = require('logger');
-var logger = new Logger('My Superb Title');
+var logger = new Logger('My Superb Report Title');
 
 logger.log('ThingDid', {
     someDetail: 'So detail',
