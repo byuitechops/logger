@@ -7,7 +7,7 @@ const moment = require('moment');
 
 module.exports = class Logger {
 
-    constructor(title) {
+    constructor(title = '') {
         this.logs = [];
         this.reportTitle = title;
         this.reportSets = [];
