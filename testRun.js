@@ -1,14 +1,30 @@
-const Logger = require('./newLogger.js');
+const Logger = require('./Logger.js');
 const logger = new Logger('Test Run');
 
-logger.log('Potato', { name: 'stuff' });
-logger.log('Potato', { name: 'stuff2' });
-logger.log('Potato', { name: 'stuff3' });
-logger.log('Potato', { name: 'stuff4' });
-logger.log('Potato', { name: 'stuff5' });
-logger.log('Potato', { name: 'stuff6' });
-logger.log('Potato', { name: 'stuff7' });
-logger.log('Potato', { name: 'stuff8' });
+logger.log('Potato', {
+    name: 'stuff'
+});
+logger.log('Potato', {
+    name: 'stuff2'
+});
+logger.log('Potato', {
+    name: 'stuff3'
+});
+logger.log('Potato', {
+    name: 'stuff4'
+});
+logger.log('Potato', {
+    name: 'stuff5'
+});
+logger.log('Potato', {
+    name: 'stuff6'
+});
+logger.log('Potato', {
+    name: 'stuff7'
+});
+logger.log('Potato', {
+    name: 'stuff8'
+});
 logger.warning('potaoooootooo');
 logger.warning('tomato');
 logger.warning('avacado');
@@ -28,6 +44,9 @@ logger.createReportSet('Potato', [
 logger.createReportSet('Warning', [
     'warning'
 ]);
+
+logger.setTagDescription('Potato', 'Potatoes forever.');
+logger.setTagDescription('error', 'ERMERGERSH SO MANY ERRORS');
 
 logger.consoleReport('testSet');
 logger.jsonReport('../../');

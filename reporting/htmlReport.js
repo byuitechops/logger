@@ -3,7 +3,12 @@ const htmlTemplate = require('./HTMLtemplate.js');
 const path = require('path');
 const chalk = require('chalk');
 
-function buildHTML(logs) {
+function buildHTML(logs, description) {
+    if (!description) {
+        description = {
+            description: ''
+        };
+    }
 
     if (logs.length === 0) {
         return null;
@@ -50,12 +55,15 @@ function buildHTML(logs) {
                 ${title}
             </div>
             <div class="collapsible-body">
+                <div class="description">
+                    ${description.description}
+                </div>
                 <table>
                     <thead>
                         <tr>
                             ${headers.join('')}
                             <th>
-                                Child Module
+                                Location
                             </th>
                             <th>
                                 Timestamp
@@ -71,7 +79,7 @@ function buildHTML(logs) {
     `;
 }
 
-module.exports = (logs, reportTitle, location, header) => {
+module.exports = (logs, reportTitle, location, header, descriptions) => {
 
     var logsObject = {};
 
@@ -83,7 +91,10 @@ module.exports = (logs, reportTitle, location, header) => {
         }
     });
 
-    var htmlCategories = Object.keys(logsObject).map(key => buildHTML(logsObject[key]));
+    var htmlCategories = Object.keys(logsObject).map(key => {
+        var description = descriptions.find(description => description.tag === key);
+        return buildHTML(logsObject[key], description);
+    });
 
     var content = htmlCategories.join('');
 

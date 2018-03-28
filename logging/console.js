@@ -31,15 +31,21 @@ module.exports = (logObj) => {
     if (logObj.tag == 'error') {
         console.log(
             fws(chalk.cyan(logObj.location), 15),
-            color1(fws(logObj.tag, 25, { align: 'left' })),
-            color2(fws(formatMessage(logObj.data), process.stdout.columns - 42, { align: 'left' }))
+            color1(fws(logObj.tag, 25, {
+                align: 'left'
+            })),
+            color2(formatMessage(logObj.data))
         );
         return;
     }
 
     console.log(
         fws(chalk.cyan(logObj.location), 15),
-        color1(fws(logObj.tag, 25, { align: 'left' })),
-        color2(fws(formatMessage(logObj.data), process.stdout.columns - 42, { align: 'left' }))
+        color1(fws(logObj.tag, 25, {
+            align: 'left'
+        })),
+        color2(fws(formatMessage(logObj.data), process.stdout.columns - 42, {
+            align: 'left'
+        }))
     );
 };
