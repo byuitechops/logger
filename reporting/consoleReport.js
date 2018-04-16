@@ -29,7 +29,7 @@ module.exports = (logs) => {
 
     console.log(`${fws(chalk.yellow(fws('WARNINGS:', 14) + warnings.length), 46)}${fws('|', 40, { align: 'right' })}`);
     if (warnings.length > 0) {
-        var warningLocations = [...new Set(errors.map(error => error.location))];
+        var warningLocations = [...new Set(warnings.map(warning => warning.location))];
         warningLocations.forEach(location => console.log(`${fws(' - ' + location, 46)}${fws('|', 40, { align: 'right' })}`));
     }
     console.log(fws('|', 86, { align: 'right', padding: '_' }));
