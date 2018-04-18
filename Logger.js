@@ -5,6 +5,15 @@ const getCallingModule = require('./logging/getCallingModule.js');
 const consoleMe = require('./logging/console.js');
 const moment = require('moment');
 
+const nonSkippables = [
+    'message',
+    'warning',
+    'error',
+    'fatalError'
+];
+
+var disableOutput = false;
+
 module.exports = class Logger {
 
     constructor(title = 'Report') {
@@ -14,7 +23,10 @@ module.exports = class Logger {
         this.htmlHeader = '';
         this.logHeader = '<div class="header1">Logs</div>';
         this.tagDescriptions = [];
-        this.disableOutput = false;
+    }
+
+    disableOutput(bool) {
+        disableOutput = bool;
     }
 
     // Adds a new report set
@@ -53,8 +65,7 @@ module.exports = class Logger {
         if (tag !== 'message') {
             this.logs.push(logObj);
         }
-
-        if (this.disableOutput === true && (tag !== 'warning' || tag !== 'error' || tag !== 'fatalError')) {
+        if (disableOutput !== false && !nonSkippables.includes(tag)) {
             return;
         }
         consoleMe(logObj);
