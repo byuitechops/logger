@@ -14,6 +14,7 @@ module.exports = class Logger {
         this.htmlHeader = '';
         this.logHeader = '<div class="header1">Logs</div>';
         this.tagDescriptions = [];
+        this.disableOutput = false;
     }
 
     // Adds a new report set
@@ -51,6 +52,10 @@ module.exports = class Logger {
         };
         if (tag !== 'message') {
             this.logs.push(logObj);
+        }
+
+        if (this.disableOutput === true && (tag !== 'warning' || tag !== 'error' || tag !== 'fatalError')) {
+            return;
         }
         consoleMe(logObj);
     }
