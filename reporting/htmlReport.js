@@ -105,7 +105,11 @@ module.exports = (logs, reportTitle, location, header, descriptions) => {
     });
 
     /* write the report */
-    fs.writeFileSync(`${path.resolve(location)}/${reportTitle}.html`, html);
+    try {
+        fs.writeFileSync(`${path.resolve(location)}/${reportTitle}.html`, html);
+    } catch (e) {
+        console.log(chalk.redBright(e));
+    }
     // eslint-disable-next-line
     console.log(chalk.greenBright(`HTML Report "${reportTitle}" written to ${path.resolve(location)}\\${reportTitle}.html`));
 };
