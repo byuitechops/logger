@@ -78,6 +78,9 @@ module.exports = class Logger {
     }
 
     error(err) {
+        if (typeof err === 'string') {
+            err = new Error(err);
+        }
         this.log('error', {
             message: err.message,
             stack: err.stack
@@ -85,6 +88,9 @@ module.exports = class Logger {
     }
 
     fatalError(err) {
+        if (typeof err === 'string') {
+            err = new Error(err);
+        }
         this.log('fatalError', {
             message: err.message,
             stack: err.stack
