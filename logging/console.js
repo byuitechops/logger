@@ -7,9 +7,6 @@ module.exports = (logObj, options) => {
     function formatMessage(data) {
         var properties = [];
         Object.keys(data).forEach(key => {
-            if (options.removeNewLines === true && typeof data[key] === 'string') {
-                data[key] = data[key].replace(/\n/g, ' ');
-            }
             properties.push(`${chalk.gray(key + ':')} ${data[key]}`);
         });
         return properties.join(' ');
@@ -41,6 +38,12 @@ module.exports = (logObj, options) => {
         );
         return;
     }
+
+    Object.keys(logObj.data).forEach(key => {
+        if (options.removeNewLines === true && typeof logObj.data[key] === 'string') {
+            logObj.data[key] = logObj.data[key].replace(/\n/g, ' ');
+        }
+    });
 
     console.log(
         fws(chalk.cyan(logObj.location), 15),
