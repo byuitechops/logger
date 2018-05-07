@@ -28,7 +28,7 @@ module.exports = (logObj, options) => {
         color2 = chalk.yellowBright;
     }
 
-    if (logObj.tag == 'error') {
+    if (logObj.tag == 'error' || logObj.tag == 'fatalError') {
         console.log(
             fws(chalk.cyan(logObj.location), 15),
             color1(fws(logObj.tag, 25, {
