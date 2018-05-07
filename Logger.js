@@ -13,6 +13,7 @@ const nonSkippables = [
 ];
 
 var disableOutput = false;
+var removeNewLines = false;
 
 module.exports = class Logger {
 
@@ -27,6 +28,10 @@ module.exports = class Logger {
 
     disableOutput(bool) {
         disableOutput = bool;
+    }
+
+    removeNewLines(bool) {
+        removeNewLines = bool;
     }
 
     // Adds a new report set
@@ -50,6 +55,9 @@ module.exports = class Logger {
 
     log(tag, details) {
         var logObj;
+        var options = {
+            removeNewLines
+        };
 
         if (details == undefined || typeof tag != 'string') {
             console.log(getCallingModule(), 'Incorrect input into Logger.log(): ', tag);
@@ -68,7 +76,14 @@ module.exports = class Logger {
         if (disableOutput !== false && !nonSkippables.includes(tag)) {
             return;
         }
-        consoleMe(logObj);
+        if (removeNewLines === true) {
+            // Object.keys(logObj.data.details).forEach(key => {
+            //     if (typeof logObj.data.details[key] === 'string') {
+            //         logObj.data.details[key] = logObj.data.details[key].replace(/\n/g, ' ');
+            //     }
+            // });
+        }
+        consoleMe(logObj, options);
     }
 
     warning(message) {

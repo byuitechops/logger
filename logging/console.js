@@ -1,12 +1,15 @@
 const chalk = require('chalk');
 const fws = require('fixed-width-string');
 
-module.exports = (logObj) => {
+module.exports = (logObj, options) => {
     var color1, color2;
 
     function formatMessage(data) {
         var properties = [];
         Object.keys(data).forEach(key => {
+            if (options.removeNewLines === true && typeof data[key] === 'string') {
+                data[key] = data[key].replace(/\n/g, ' ');
+            }
             properties.push(`${chalk.gray(key + ':')} ${data[key]}`);
         });
         return properties.join(' ');
