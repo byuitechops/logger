@@ -3,7 +3,7 @@ const htmlTemplate = require('./HTMLtemplate.js');
 const path = require('path');
 const chalk = require('chalk');
 
-function buildHTML(logs, description) {
+function buildHTML(logs, description, disableLocation, disableTimestamp) {
     if (!description) {
         description = {
             description: ''
@@ -18,15 +18,20 @@ function buildHTML(logs, description) {
         var values = Object.values(log.data).map(value => {
             return `<td>${value}</td>`;
         });
+        var locationTemplate = `<td>
+                                    ${log.location}
+                                </td>`;
+        var timestampTemplate = `<td>
+                                    ${log.timestamp}
+                                </td>`;
+
+        if (disableLocation === true) locationTemplate = '';
+        if (disableTimestamp === true) timestampTemplate = '';
         return `
             <tr>
                 ${values.join('\n')}
-                <td>
-                    ${log.location}
-                </td>
-                <td>
-                    ${log.timestamp}
-                </td>
+                ${locationTemplate}
+                ${timestampTemplate}
             </tr>
         `;
     });
@@ -49,6 +54,20 @@ function buildHTML(logs, description) {
         title = `${logs[0].tag} (${logs.length})`;
     }
 
+    var locationHeader = `
+        <th>
+            Location
+        </th>
+    `;
+    var timestampHeader = `
+        <th>
+            Timestamp
+        </th>
+    `;
+
+    if (disableLocation) locationHeader = '';
+    if (disableTimestamp) timestampHeader = '';
+
     return `
         <li>
             <div class="collapsible-header">
@@ -62,12 +81,8 @@ function buildHTML(logs, description) {
                     <thead>
                         <tr>
                             ${headers.join('')}
-                            <th>
-                                Location
-                            </th>
-                            <th>
-                                Timestamp
-                            </th>
+                            ${locationHeader}
+                            ${timestampHeader}
                         </tr>
                     </thead>
                     <tbody>
@@ -79,7 +94,7 @@ function buildHTML(logs, description) {
     `;
 }
 
-module.exports = (logs, reportTitle, location, header, descriptions) => {
+module.exports = (logs, reportTitle, location, header, descriptions, disableLocation, disableTimestamp) => {
 
     var logsObject = {};
 
@@ -93,7 +108,7 @@ module.exports = (logs, reportTitle, location, header, descriptions) => {
 
     var htmlCategories = Object.keys(logsObject).map(key => {
         var description = descriptions.find(description => description.tag === key);
-        return buildHTML(logsObject[key], description);
+        return buildHTML(logsObject[key], description, disableLocation, disableTimestamp);
     });
 
     var content = htmlCategories.join('');

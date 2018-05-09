@@ -24,6 +24,8 @@ module.exports = class Logger {
         this.htmlHeader = '';
         this.logHeader = '<div class="header1">Logs</div>';
         this.tagDescriptions = [];
+        this.disableLocation = false;
+        this.disableTimestamp = false;
     }
 
     disableOutput(bool) {
@@ -66,22 +68,16 @@ module.exports = class Logger {
 
         logObj = {
             tag: tag,
+            data: details,
             location: getCallingModule(),
-            timestamp: moment().format(),
-            data: details
+            timestamp: moment().format()
         };
+
         if (tag !== 'message') {
             this.logs.push(logObj);
         }
         if (disableOutput !== false && !nonSkippables.includes(tag)) {
             return;
-        }
-        if (removeNewLines === true) {
-            // Object.keys(logObj.data.details).forEach(key => {
-            //     if (typeof logObj.data.details[key] === 'string') {
-            //         logObj.data.details[key] = logObj.data.details[key].replace(/\n/g, ' ');
-            //     }
-            // });
         }
         consoleMe(logObj, options);
     }
@@ -165,7 +161,7 @@ module.exports = class Logger {
         var tags = this.findReportSetTags(reportSetName);
         var title = this.buildReportTitle(reportSetName);
         var logs = this.filterLogs(this.logs, tags);
-        htmlReport(logs, title, path, this.htmlHeader, this.tagDescriptions);
+        htmlReport(logs, title, path, this.htmlHeader, this.tagDescriptions, this.disableLocation, this.disableTimestamp);
     }
 
     consoleReportAll() {
