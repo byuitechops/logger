@@ -111,7 +111,6 @@ module.exports = (logs, reportTitle, location, header, descriptions, disableLoca
         return buildHTML(logsObject[key], description, disableLocation, disableTimestamp);
     });
     htmlCategories.sort();
-    console.log(htmlCategories);
 
     var content = htmlCategories.join('');
 
