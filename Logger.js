@@ -152,14 +152,14 @@ module.exports = class Logger {
 
     jsonReport(path, reportSetName) {
         var tags = this.findReportSetTags(reportSetName);
-        var title = this.buildReportTitle(reportSetName);
+        var title = this.buildReportTitle(reportSetName).replace(/:/gi, '');
         var logs = this.filterLogs(this.logs, tags);
         jsonReport(logs, title, path);
     }
 
     htmlReport(path, reportSetName) {
         var tags = this.findReportSetTags(reportSetName);
-        var title = this.buildReportTitle(reportSetName);
+        var title = this.buildReportTitle(reportSetName).replace(/:/gi, '');
         var logs = this.filterLogs(this.logs, tags);
         htmlReport(logs, title, path, this.htmlHeader, this.tagDescriptions, this.disableLocation, this.disableTimestamp);
     }
